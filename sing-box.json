@@ -1,0 +1,716 @@
+{
+  "log": {
+    "disabled": false,
+    "level": "info",
+    "timestamp": true
+           },
+
+  "experimental": {
+                   "cache_file": 
+                    {
+                     "enabled": true,
+                     "store_rdrc": true
+                    },
+                   "clash_api": {
+                                  "default_mode": "Rule"
+                                }
+                   },
+
+  "dns": {
+    "servers": [
+      {
+        "tag": "basic",
+        "address": "114.114.114.114",
+        "address_strategy": "prefer_ipv4", 
+        "detour": "DIRECT"
+      },
+      {
+        "tag": "local",
+        "address": "h3://hd.h2o.apad.pro/dns-query",
+        "address_resolver": "basic", 
+        "address_strategy": "prefer_ipv4", 
+        "detour": "DIRECT"
+      },
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8",
+        "address_resolver": "local", 
+        "address_strategy": "prefer_ipv4", 
+        "detour": "Manual"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "server": "local"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "rule_set": "geoip-cn"
+          }
+        ],
+        "server": "google",
+        "client_subnet": "114.114.114.114"
+      }
+    ],
+    "final": "google",
+    "strategy": "prefer_ipv4"
+  },
+
+  "inbounds": [
+    {
+      "type": "tun",
+      "domain_strategy":"prefer_ipv4",
+      "address": [
+                  "172.19.0.1/30",
+                  "fdfe:dcba:9876::1/126"
+                 ],
+      "mtu": 9000,
+      "auto_route": true,
+      "sniff": true,
+      "stack": "system",
+      "platform": {
+        "http_proxy": {
+          "enabled": true,
+          "server": "127.0.0.1",
+          "server_port": 7080
+        }
+      }
+    },
+    {
+      "type": "mixed",
+      "listen": "127.0.0.1",
+      "listen_port": 7080,
+      "sniff": true,
+      "users": []
+    }
+  ],
+
+  "outbounds": [
+    {
+      "tag": "Ali5-HK-SS",
+      "type": "shadowsocks",
+      "server": "183.249.102.239",
+      "server_port": 37654,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "UsZrcQa29E7LO2CyxjIEow=="
+    },
+  {
+      "tag": "CLAW-HK-SS",
+      "type": "shadowsocks",
+      "server": "183.249.102.239",
+      "server_port": 8443,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "Niw87JJ1RH9Bc0QRUKQKfw=="
+    },
+    {
+      "tag": "CLAW-JP-SS",
+      "type": "shadowsocks",
+      "server": "183.249.102.239",
+      "server_port": 19999,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "0JVCsUv/tZceX+MppV/xzA=="
+    },
+  {
+    "tag": "CLAW-HK-4U",
+    "type": "trojan",
+    "server": "clawhk2.220111.xyz",
+    "server_port": 45992,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "CLAW-HK-8U",
+    "type": "trojan",
+    "server": "clawhk8.220111.xyz",
+    "server_port": 45992,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "YXVM-HK",
+    "type": "trojan",
+    "server": "yxvmhk.220111.xyz",
+    "server_port": 23333,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "BWG-HK",
+    "type": "trojan",
+    "server": "bwghk2.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "GCP-HK",
+    "type": "trojan",
+    "server": "gcphk.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "CloudSilk-HK",
+    "type": "trojan",
+    "server": "cshk.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "GCP-TW",
+    "type": "trojan",
+    "server": "taiwangoogle.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-KR-1",
+    "type": "trojan",
+    "server": "oracleseoul.220111.xyz",
+    "server_port": 56569,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-KR-2",
+    "type": "trojan",
+    "server": "oraclekr.220111.xyz",
+    "server_port": 13242,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "V.PS-JP",
+    "type": "trojan",
+    "server": "vpsjp.220111.xyz",
+    "server_port": 56567,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Green-JP",
+    "type": "trojan",
+    "server": "gcjp.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "CLAW-JP",
+    "type": "trojan",
+    "server": "clawjp.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Green-SG",
+    "type": "trojan",
+    "server": "grsg.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "DMIT-LA-37",
+    "type": "trojan",
+    "server": "dmitlax37.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "V.PS-SJC",
+    "type": "trojan",
+    "server": "vsjc.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "BWG-LA",
+    "type": "trojan",
+    "server": "bwgla.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "CC-LA",
+    "type": "trojan",
+    "server": "cclax.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-SJC",
+    "type": "trojan",
+    "server": "orasjc.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-ASB",
+    "type": "trojan",
+    "server": "oraasbamd.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-EN-ARM",
+    "type": "trojan",
+    "server": "oraukarm.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Oracle-EN-AMD",
+    "type": "trojan",
+    "server": "oraukamd.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  },
+  {
+    "tag": "Misaka-JNB",
+    "type": "trojan",
+    "server": "jnb.220111.xyz",
+    "server_port": 52331,
+    "password": "f07faddd-5313-4f74-acda-7b1ec12a540f",
+    "tls": {
+      "enabled": true,
+      "server_name": "www.bing.com",
+      "insecure": true
+    }
+  }
+    { "tag": "YouTube", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "OpenAI", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "Google", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "Github", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "Netflix", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "Telegram", 
+	  "type": "selector", 
+	  "outbounds": [
+					"AUTO", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers",
+					"Manual"
+	               ] 
+	},
+    { "tag": "Apple", 
+	  "type": "selector", 
+	  "outbounds": [
+		            "DIRECT", 
+					"🇭🇰 HK Servers", 
+					"🇯🇵 JP Servers", 
+					"🇺🇲 US Servers"
+	               ] 
+	},
+    { "tag": "FINAL", 
+	  "type": "selector", 
+	  "outbounds": [
+		            "Manual"
+	               ] 
+	},
+  {
+    "tag": "🇭🇰 HK Servers",
+    "type": "selector",
+    "outbounds": ["Ali5-HK-SS", "CLAW-HK-SS", "CLAW-HK-4U", "CLAW-HK-8U", "YXVM-HK", "BWG-HK", "GCP-HK", "CloudSilk-HK"]
+  },
+  {
+    "tag": "🇯🇵 JP Servers",
+    "type": "selector",
+    "outbounds": ["CLAW-JP-SS", "V.PS-JP", "Green-JP", "CLAW-JP"]
+  },
+  {
+    "tag": "🇺🇲 US Servers",
+    "type": "selector",
+    "outbounds": ["DMIT-LA-37", "V.PS-SJC", "BWG-LA", "CC-LA"]
+  },
+  {
+    "tag": "Manual",
+    "type": "selector",
+    "outbounds": ["Ali5-HK-SS", "CLAW-HK-SS", "CLAW-JP-SS", "V.PS-JP", "Green-JP", "YXVM-HK", "BWG-HK", "GCP-HK", "CloudSilk-HK", "GCP-TW", "Oracle-KR-1", "Oracle-KR-2"]
+  },
+  {
+    "tag": "AUTO",
+    "type": "urltest",
+    "outbounds": ["Ali5-HK-SS", "CLAW-HK-SS", "CLAW-JP-SS", "V.PS-JP", "Green-JP", "BWG-HK", "GCP-HK", "GCP-TW", "Oracle-KR-1", "Oracle-KR-2"],
+    "url": "http://www.apple.com/library/test/success.html",
+    "interval": "30m",
+    "tolerance": 20
+  }  
+  {
+    "tag": "GLOBAL",
+    "type": "selector",
+    "outbounds": [
+      "🇭🇰 HK Servers",
+      "🇯🇵 JP Servers",
+      "🇺🇲 US Servers",
+      "Manual",
+      "AUTO"
+    ]
+  }  
+    { "tag": "DIRECT",
+      "type": "direct" 
+    }
+               ],
+  
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {"action": "sniff"},
+      {
+        "protocol": "quic",
+        "action": "reject"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "DIRECT"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "DIRECT"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "GLOBAL"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "port": 853
+          },
+          {
+            "network": "udp",
+            "port": 443
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
+        "action": "reject"
+      },
+      { "rule_set": "geosite-chat", 
+		"outbound": "OpenAI" 
+	  },
+      { "rule_set": "geosite-github", 
+		"outbound": "Github"
+	  },
+      { "rule_set": "geosite-youtube", 
+		"outbound": "YouTube" 
+	  },
+      { "rule_set": [
+		             "geoip-google", 
+		             "geosite-google"
+	                ], 
+		"outbound": "Google" 
+	  },
+      { "rule_set": "geosite-tiktok", 
+		"outbound": "TikTok" 
+	  },
+      { "rule_set": [
+		             "geoip-apple", 
+					 "geosite-apple"
+	                ], 
+		"outbound": "Apple" 
+	  },
+      { "rule_set": [
+		             "geoip-netflix", 
+					 "geosite-netflix"
+	                ], 
+		"outbound": "Netflix" 
+	  },
+      { "rule_set": [
+		             "geoip-telegram", 
+					 "geosite-telegram"
+	                ], 
+		"outbound": "Telegram" 
+	  },
+      { "rule_set": "geosite-geolocation-!cn",
+	    "outbound": "Manual" },
+      { "rule_set": "geosite-geolocation-cn",
+	    "outbound": "DIRECT" },
+      { "rule_set": [
+		             "geoip-cn", 
+					 "geosite-cn"
+	                ], 
+		"outbound": "DIRECT" 
+	  }
+    ],
+    
+    "rule_set": [
+      {
+        "type": "DOMAIN-SUFFIX",
+        "domain": "nodeseek.com",
+        "outboundTag": "🇭🇰 HK Servers"
+      },
+      {
+        "type": "DOMAIN-SUFFIX",
+        "domain": "redotpay.com",
+        "outboundTag": "🇭🇰 HK Servers"
+      },
+      {
+        "type": "DOMAIN-SUFFIX",
+        "domain": "yxvm.com",
+        "outboundTag": "DIRECT"
+      },
+      {
+        "type": "DOMAIN-SUFFIX",
+        "domain": "hanime1.com",
+        "outboundTag": "🇭🇰 HK Servers"
+      },
+      {
+        "type": "DOMAIN-SUFFIX",
+        "domain": "18comic.vip",
+        "outboundTag": "🇭🇰 HK Servers"
+      },
+      { "tag": "geosite-chat", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-chat-!cn.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geosite-youtube", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geosite-google", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geosite-github", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/github.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geosite-telegram", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs", 
+		"download_detour": "GLOBAL"
+	  },
+      { "tag": "geosite-apple", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+     {
+        "type": "remote",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      { "tag": "geosite-geolocation-!cn",
+	    "type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geosite-cn", 
+	    "type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geoip-google", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geoip-telegram", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/telegram.srs", 
+		"download_detour": "GLOBAL" 
+	  },         
+      { "tag": "geoip-apple", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo-lite/geoip/apple.srs", 
+		"download_detour": "GLOBAL" 
+	  },
+      { "tag": "geoip-cn", 
+		"type": "remote", 
+		"format": "binary", 
+		"url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs", 
+		"download_detour": "GLOBAL"
+	  },
+    ],
+    "final":"FINAL"
+  }
+}
