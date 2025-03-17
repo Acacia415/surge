@@ -74,6 +74,7 @@ rule-providers:
   Telegram: {<<: *c, path: ./rules/Telegram.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list}
   AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   Emby: {<<: *c, path: ./rules/Emby.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Emby.list}
+  TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
 
 
 
@@ -88,6 +89,7 @@ rules:
   - GEOSITE,github,微软服务
   - GEOSITE,microsoft,微软服务
   - GEOSITE,gfw,国外网站
+  - RULE-SET,TikTok,国际媒体
   - GEOIP,private,DIRECT
   - GEOIP,cn,DIRECT
   - MATCH,兜底分流
