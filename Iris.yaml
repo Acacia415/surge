@@ -71,7 +71,7 @@ rule-providers:
   AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   Emby: {<<: *c, path: ./rules/Emby.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Emby.list}
   TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
-  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://raw.githubusercontent.com/Acacia415/surge/main/talkatone.list}
+  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://github.com/Acacia415/surge/main/talkatone.list}
 
 
 
