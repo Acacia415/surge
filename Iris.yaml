@@ -72,7 +72,7 @@ rule-providers:
   Telegram: {<<: *c, path: ./rules/Telegram.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list}
   AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
-  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/talkatone.list}
+  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/TalkaTone.list}
   PayPal: {<<: *c, path: ./rules/PayPal.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/PayPal.list}
 
 
