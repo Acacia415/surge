@@ -1,0 +1,155 @@
+mixed-port: 7893
+allow-lan: true
+mode: rule
+log-level: info
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+global-client-fingerprint: chrome
+find-process-mode: strict
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  listen: :1053
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter: ['*', '+.lan', '+.local', '+.direct', '+.msftconnecttest.com', '+.msftncsi.com']
+  nameserver: [223.5.5.5, 8.8.8.8]
+
+proxy-providers:
+  Subscribe:
+    url: https://gist.githubusercontent.com/crane557/2da1d3ccbd066e8f8eeaf4bc4586ee8f/raw/Vless
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: http://1.1.1.1/generate_204
+      interval: 1800
+      timeout: 5000
+
+proxy-groups:
+  - name: 手动切换
+    type: select
+    proxies:
+      - DIRECT
+
+  - name: 国外网站
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 国际媒体
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 微软服务
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 谷歌服务
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 电报消息
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: AI
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: TikTok
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 香港节点
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 美国节点
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+  - name: 兜底分流
+    type: select
+    proxies:
+      - 手动切换
+      - DIRECT
+
+rule-providers:
+  AD:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Reject.list
+
+  YouTube:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/YouTube.list
+
+  Google:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Google.list
+
+  Telegram:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list
+
+  AI:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list
+
+  TikTok:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list
+
+rules:
+  - RULE-SET,AD,REJECT
+  - GEOIP,private,DIRECT
+  - GEOIP,CN,DIRECT
+  - RULE-SET,AI,AI
+  - RULE-SET,YouTube,国际媒体
+  - RULE-SET,Google,谷歌服务
+  - RULE-SET,Telegram,电报消息
+  - RULE-SET,TikTok,国际媒体
+  - GEOSITE,microsoft,微软服务
+  - GEOSITE,gfw,国外网站
+  - DOMAIN-SUFFIX,18comic.vip,香港节点
+  - DOMAIN-SUFFIX,hanime1.me,香港节点
+  - DOMAIN-SUFFIX,yxvm.com,DIRECT
+  - DOMAIN-SUFFIX,nodeseek.com,香港节点
+  - MATCH,兜底分流
