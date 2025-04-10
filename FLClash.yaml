@@ -1,9 +1,14 @@
 p: &p {type: http, interval: 86400, health-check: {enable: true, url: http://1.1.1.1/generate_204, interval: 1800, timeout: 5000}}
-
 proxy-providers:
-  Subscribe:
+  Subscribe: # 在此将 "http://your-service-provider" 替换为你的机场订阅，推荐使用 base64 或者 node list
     url: https://gist.githubusercontent.com/crane557/2da1d3ccbd066e8f8eeaf4bc4586ee8f/raw/Vless
     <<: *p
+    #override: # 修改节点前后缀时，需移除前方的 "#" 符号
+      #additional-prefix: "节点前缀"
+      #additional-suffix: "节点后缀"
+  #Subscribe2: {url: http://your-service-provider, <<: *p}
+  #Subscribe3: {url: http://your-service-provider, <<: *p}
+  #Subscribe4: {url: http://your-service-provider, <<: *p}
 
 mixed-port: 7893
 tcp-concurrent: true
@@ -22,19 +27,13 @@ geox-url:
   asn: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-ASN.mmdb"
 
 profile: { store-selected: true, store-fake-ip: false }
-
-sniffer:
-  enable: true
-  sniff:
-    HTTP: { ports: [80], override-destination: true }
-    TLS: { ports: [443, 8443] }
-    QUIC: { ports: [443, 8443] }
+sniffer: { enable: true, sniff: { HTTP: { ports: [80], override-destination: true }, TLS: { ports: [443, 8443] }, QUIC: { ports: [443, 8443] } } }
 
 tun:
   enable: true
   stack: mixed
   dns-hijack: [any:53]
-
+        
 dns:
   enable: true
   ipv6: false
@@ -44,10 +43,16 @@ dns:
   fake-ip-filter: ['*', '+.lan', '+.local', '+.direct', '+.msftconnecttest.com', '+.msftncsi.com']
   nameserver: [223.5.5.5, 8.8.8.8]
 
+# 锚点参数
 pg: &pg {type: select, proxies: [手动切换, DIRECT]}
+url-test: &url-test {type: url-test, url: http://1.1.1.1/generate_204, interval: 300, tolerance: 0, include-all: true}
+select: &select {type: select, include-all: true}
+fallback: &fallback {type: fallback, url: http://1.1.1.1/generate_204, interval: 300, include-all: true}
+load-balance: &load-balance {type: load-balance, strategy: consistent-hashing, url: http://1.1.1.1/generate_204, interval: 300, include-all: true}
 c: &c {type: http, behavior: classical, format: text, interval: 86400}
 
 proxy-groups:
+
   - {name: 手动切换, type: select, include-all: true, proxies: [DIRECT], icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/applesafari.png}
   - {name: 国外网站, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png}
   - {name: 国际媒体, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png}
@@ -57,11 +62,8 @@ proxy-groups:
   - {name: TikTok, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png}
   - {name: AI, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png}
   - {name: TalkTone, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/QQ.png}
-  - {name: PayPal, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/PayPal.png}
-  - {name: 香港节点, <<: *pg, include-all: true, filter: "(?i)🇭🇰|香港|HK", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png}
-  - {name: 美国节点, <<: *pg, include-all: true, filter: "(?i)🇺🇸|美国|LA|SJC", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png}
+  - {name: PayPal, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png}
   - {name: 兜底分流, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png}
-
 rule-providers:
   AD: {<<: *c, path: ./rules/AD.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Reject.list}
   YouTube: {<<: *c, path: ./rules/YouTube.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/YouTube.list}
@@ -69,26 +71,23 @@ rule-providers:
   Telegram: {<<: *c, path: ./rules/Telegram.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list}
   AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
-  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/TalkaTone.list}
+  TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://github.com/Acacia415/surge/raw/main/TalkaTone.list}
   PayPal: {<<: *c, path: ./rules/PayPal.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/PayPal.list}
 
+
+
 rules:
-  - DOMAIN-SUFFIX,18comic.vip,香港节点
-  - DOMAIN-SUFFIX,hanime1.me,香港节点
-  - DOMAIN-SUFFIX,yxvm.com,DIRECT
-  - DOMAIN-SUFFIX,nodeseek.com,香港节点
   - RULE-SET,AD,REJECT
-  - GEOIP,private,DIRECT
-  - GEOIP,cn,DIRECT
   - RULE-SET,AI,AI
-  - GEOSITE,microsoft,微软服务
-  - GEOSITE,onedrive,微软服务
-  - GEOSITE,github,微软服务
-  - RULE-SET,YouTube,国际媒体
+  - RULE-SET,YouTube,谷歌服务
   - RULE-SET,Google,谷歌服务
   - RULE-SET,Telegram,电报消息
-  - RULE-SET,TikTok,国际媒体
+  - GEOSITE,onedrive,微软服务
+  - GEOSITE,github,微软服务
+  - GEOSITE,microsoft,微软服务
   - GEOSITE,gfw,国外网站
   - RULE-SET,TalkTone,TalkTone
   - RULE-SET,PayPal,PayPal
+  - GEOIP,private,DIRECT
+  - GEOIP,cn,DIRECT
   - MATCH,兜底分流
