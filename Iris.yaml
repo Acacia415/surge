@@ -89,7 +89,6 @@ rules:
   - RULE-SET,Google,谷歌服务
   - RULE-SET,Telegram,电报消息
   - RULE-SET,TikTok,国际媒体
-  - GEOSITE,tiktok,国际媒体
   - GEOSITE,gfw,国外网站
   - RULE-SET,TalkTone,TalkTone
   - RULE-SET,PayPal,手动切换
