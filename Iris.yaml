@@ -63,8 +63,8 @@ proxy-groups:
   - {name: AI, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png}
   - {name: TalkTone, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/QQ.png}
   - {name: PayPal, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png}
-  - {name: 香港节点, <<: *pg, include-all: true, filter: "🇭🇰 香港 HK", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png}
-  - {name: 美国节点, <<: *pg, include-all: true, filter: "🇺🇸 美国 LA SJC", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png}
+  - {name: 香港节点, <<: *pg, include-all: true, filter: "(?i)🇭🇰|香港|(\b(HK|Hong)\b)", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png}
+  - {name: 美国节点, <<: *pg, include-all: true, filter: "(?i)🇺🇸|美国|洛杉矶|圣何塞|(\b(LA|SJC|ASB)\b)", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png}
   - {name: 兜底分流, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png}
 rule-providers:
   AD: {<<: *c, path: ./rules/AD.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Reject.list}
