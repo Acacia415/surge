@@ -91,9 +91,5 @@ rules:
   - RULE-SET,TikTok,国际媒体
   - GEOSITE,gfw,国外网站
   - RULE-SET,TalkTone,TalkTone
-  - RULE-SET,PayPal,手动切换
-  - DOMAIN-SUFFIX,18comic.vip,香港节点
-  - DOMAIN-SUFFIX,hanime1.me,香港节点
-  - DOMAIN-SUFFIX,yxvm.com,DIRECT
-  - DOMAIN-SUFFIX,nodeseek.com,香港节点
+  - RULE-SET,PayPal,PayPal
   - MATCH,兜底分流
