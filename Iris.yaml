@@ -61,6 +61,7 @@ proxy-groups:
   - {name: 电报消息, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png}
   - {name: TikTok, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png}
   - {name: AI, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png}
+  - {name: Gemini, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Prince671/Gemini/main/gemini_icon.png}
   - {name: TalkTone, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/QQ.png}
   - {name: PayPal, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png}
   - {name: 香港节点, <<: *url-test, include-all: true, filter: "(?i)🇭🇰|香港|HK|(\b(HK|Hong)\b)", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png}
@@ -93,7 +94,7 @@ rules:
   - GEOSITE,github,微软服务
   - RULE-SET,TikTok,国际媒体
   - RULE-SET,YouTube,国际媒体
-  - RULE-SET,Gemini,谷歌服务
+  - RULE-SET,Gemini,Gemini
   - RULE-SET,Google,谷歌服务
   - RULE-SET,Telegram,电报消息
   - GEOSITE,gfw,国外网站
