@@ -60,8 +60,8 @@ proxy-groups:
   - {name: 谷歌服务, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png}
   - {name: 电报消息, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png}
   - {name: TikTok, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png}
-  - {name: AI, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png}
   - {name: Gemini, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Prince671/Gemini/main/gemini_icon.png}
+  - {name: AI, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png}
   - {name: TalkTone, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/QQ.png}
   - {name: PayPal, <<: *pg, include-all: true, icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png}
   - {name: 香港节点, <<: *url-test, include-all: true, filter: "(?i)🇭🇰|香港|HK|(\b(HK|Hong)\b)", icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png}
@@ -72,8 +72,8 @@ rule-providers:
   YouTube: {<<: *c, path: ./rules/YouTube.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/YouTube.list}
   Google: {<<: *c, path: ./rules/Google.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Google.list}
   Telegram: {<<: *c, path: ./rules/Telegram.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list}
-  AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   Gemini: {<<: *c, path: ./rules/Gemini.list, url: https://github.com/blackmatrix7/ios_rule_script/raw/master/rule/Clash/Gemini/Gemini.list}
+  AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
   TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
   TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://github.com/Acacia415/surge/raw/main/TalkaTone.list}
   PayPal: {<<: *c, path: ./rules/PayPal.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/PayPal.list}
@@ -88,13 +88,13 @@ rules:
   - RULE-SET,AD,REJECT
   - GEOIP,private,DIRECT
   - GEOIP,cn,DIRECT
-  - RULE-SET,AI,AI
   - GEOSITE,microsoft,微软服务
   - GEOSITE,onedrive,微软服务
   - GEOSITE,github,微软服务
   - RULE-SET,TikTok,国际媒体
   - RULE-SET,YouTube,国际媒体
   - RULE-SET,Gemini,Gemini
+  - RULE-SET,AI,AI
   - RULE-SET,Google,谷歌服务
   - RULE-SET,Telegram,电报消息
   - GEOSITE,gfw,国外网站
