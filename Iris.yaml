@@ -73,7 +73,7 @@ rule-providers:
   Google: {<<: *c, path: ./rules/Google.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Google.list}
   Telegram: {<<: *c, path: ./rules/Telegram.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/Telegram.list}
   AI: {<<: *c, path: ./rules/AI.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/AI.list}
-  Gemini: {<<: *c, path: ./rules/Gemini.list, url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Gemini/Gemini.list}
+  Gemini: {<<: *c, path: ./rules/Gemini.list, url: https://github.com/blackmatrix7/ios_rule_script/raw/master/rule/Clash/Gemini/Gemini.list}
   TikTok: {<<: *c, path: ./rules/TikTok.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/TikTok.list}
   TalkTone: {<<: *c, path: ./rules/TalkTone.list, url: https://github.com/Acacia415/surge/raw/main/TalkaTone.list}
   PayPal: {<<: *c, path: ./rules/PayPal.list, url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/PayPal.list}
