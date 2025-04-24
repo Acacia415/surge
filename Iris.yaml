@@ -1,7 +1,7 @@
 p: &p {type: http, interval: 86400, health-check: {enable: true, url: http://1.1.1.1/generate_204, interval: 1800, timeout: 5000}}
 proxy-providers:
   Subscribe: # 在此将 "http://your-service-provider" 替换为你的机场订阅，推荐使用 base64 或者 node list
-    url: https://gist.githubusercontent.com/crane557/2da1d3ccbd066e8f8eeaf4bc4586ee8f/raw/Vless
+    url: https://gist.githubusercontent.com/crane557/2da1d3ccbd066e8f8eeaf4bc4586ee8f/raw/SS
     <<: *p
     #override: # 修改节点前后缀时，需移除前方的 "#" 符号
       #additional-prefix: "节点前缀"
