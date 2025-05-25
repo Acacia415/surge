@@ -280,11 +280,11 @@ function main() {
       "url": "https://github.com/Acacia415/Tool/raw/X/Clash/Rules/AI.list",
       "path": "./rules/AI.list"
     },
-    "Emby": {
+        "Twitter": {
       ...ruleProviderCommon,
       "behavior": "classical",
-      "url": "https://github.com/Acacia415/Tool/raw/X/Clash/Rules/Emby.list",
-      "path": "./rules/Emby.list"
+      "url": "https://github.com/Acacia415/Tool/raw/X/Clash/Rules/Twitter.list",
+      "path": "./rules/Twitter.list"
     },
     "Spotify": {
       ...ruleProviderCommon,
