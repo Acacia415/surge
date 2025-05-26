@@ -114,7 +114,11 @@ proxy-groups:
   - name: 手动切换
     type: select
     include-all: true
-    proxies: [DIRECT]
+    proxies:
+      - 手动切换
+      - DIRECT
+      - 香港节点
+      - 美国节点
     use: [Subscribe]
     icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/applesafari.png
   - name: 国外网站
