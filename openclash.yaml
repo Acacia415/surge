@@ -115,7 +115,6 @@ proxy-groups:
     type: select
     include-all: true
     proxies:
-      - 手动切换
       - DIRECT
       - 香港节点
       - 美国节点
