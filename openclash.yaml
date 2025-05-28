@@ -116,7 +116,6 @@ proxy-groups:
     include-all: true
     proxies: [DIRECT]
     use: [Subscribe]
-    icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/applesafari.png
   - name: 国外网站
     <<: *pg
     use: [Subscribe]
@@ -125,7 +124,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png
   - name: 国际媒体
     <<: *pg
     use: [Subscribe]
@@ -134,7 +132,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
   - name: 微软服务
     <<: *pg
     use: [Subscribe]
@@ -143,7 +140,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png
   - name: 谷歌服务
     <<: *pg
     use: [Subscribe]
@@ -152,7 +148,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png
   - name: 电报消息
     <<: *pg
     use: [Subscribe]
@@ -161,7 +156,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png
   - name: TikTok
     <<: *pg
     use: [Subscribe]
@@ -170,7 +164,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png
   - name: Gemini
     <<: *pg
     use: [Subscribe]
@@ -179,7 +172,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Prince671/Gemini/main/gemini_icon.png
   - name: AI
     <<: *pg
     use: [Subscribe]
@@ -188,7 +180,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png
   - name: TalkTone
     <<: *pg
     use: [Subscribe]
@@ -197,7 +188,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/QQ.png
   - name: PayPal
     <<: *pg
     use: [Subscribe]
@@ -206,17 +196,14 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png
   - name: 香港节点
     <<: *url-test
     use: [Subscribe]
     filter: "(?i)🇭🇰|香港|HK|(\b(HK|Hong)\b)"
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png
   - name: 美国节点
     <<: *url-test
     use: [Subscribe]
     filter: "(?i)🇺🇸|美国|LA|SJC|(\b(US|United States)\b)"
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png
   - name: 兜底分流
     <<: *pg
     use: [Subscribe]
@@ -225,7 +212,6 @@ proxy-groups:
       - DIRECT
       - 香港节点
       - 美国节点
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png
 
 rule-providers:
   AD:
@@ -266,6 +252,7 @@ rule-providers:
     url: https://github.com/Repcz/Tool/raw/X/Clash/Rules/PayPal.list
 
 rules:
+  - DOMAIN-SUFFIX,cn.bing.com,DIRECT
   - DOMAIN-SUFFIX,18comic.vip,香港节点
   - DOMAIN-SUFFIX,hanime1.me,香港节点
   - DOMAIN-SUFFIX,yxvm.com,DIRECT
