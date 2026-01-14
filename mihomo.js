@@ -203,7 +203,7 @@ function createRules() {
         "DOMAIN-SUFFIX,vps.hosting,DIRECT",
         "DOMAIN-SUFFIX,18comic.vip,香港节点",
         "DOMAIN-SUFFIX,hanime1.me,香港节点",
-        "DOMAIN-SUFFIX,nodeseek.com,香港节点",
+        "DOMAIN-SUFFIX,nodeseek.com,美国节点",
 
         // --- 规则集 ---
         "RULE-SET,AD,REJECT",
