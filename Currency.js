@@ -1,0 +1,12 @@
+#!name=Currency
+#!desc=Quantumult X -> Surge module syntax study
+#!system=ios
+
+[Script]
+Currency Request = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(subscribers\/[^\/]+$|receipts$),script-path=https://raw.githubusercontent.com/Guding88/Script/main/Currency.js,script-update-interval=86400
+
+Currency Response = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(subscribers\/[^\/]+$|receipts$),script-path=https://raw.githubusercontent.com/Guding88/Script/main/Currency.js,requires-body=true,script-update-interval=86400
+
+[MITM]
+hostname = %APPEND% api.example.com
+
