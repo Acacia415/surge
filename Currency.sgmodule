@@ -3,7 +3,7 @@
 #!system=ios
 
 [Script]
-Currency Request = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(subscribers\/[^\/]+$|receipts$),script-path=https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/Currency.js,requires-body=true
+Currency Request = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(subscribers\/[^\/]+$|receipts$),script-path=https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/Currency.js
 
 Currency Response = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(subscribers\/[^\/]+$|receipts$),script-path=https://raw.githubusercontent.com/Acacia415/surge/refs/heads/main/Currency.js,requires-body=true
 
