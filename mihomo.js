@@ -3,40 +3,85 @@ const ruleProviderCommon = {
     "type": "http",
     "format": "text",
     "behavior": "classical",
-    "interval": 86400 // 24小时更新一次
+    "interval": 86400 
 };
 
 // 自动测速策略组的通用配置
 const groupBaseOption = {
-    "interval": 600, // 10分钟测速一次
-    "url": "http://cp.cloudflare.com/generate_204",
-    "tolerance": 50,
+  interval: 300,
+  url: "https://cp.cloudflare.com",
+  tolerance: 50,
+  timeout: 12000,
+  lazy: true,
+  //"expected-status": 204,
+};
+
+// 手动选择策略组的通用测速配置
+const selectGroupBaseOption = {
+  url: "https://cp.cloudflare.com",
+  timeout: 12000,
+  lazy: true,
 };
 
 // --- 主函数 ---
 
 function main(config) {
+    if (!config.proxies) config.proxies = [];
+
+    // --- 1. 处理代理链节点 (数组遍历法) ---
+    // 【核心修改】：在这里统一定义你的代理链配置。以后想加几条就写几行！
+    // target: 你要找的原始落地节点名称包含的关键字
+    // newName: 生成的新代理链节点名称（强烈建议保留 "-Chained" 后缀防环路）
+    // dialer: 你的前置跳板节点名称
+    const chainConfigs = [
+      // { target: "Boil-HKT", newName: "Boil-HKT-Chained", dialer: "RFC-HK" },
+        { target: "Halo-SG", newName: "Halo-SG-Chained", dialer: "RFC-HK" },
+        { target: "Green-SG", newName: "Green-SG-Chained", dialer: "RFC-HK" },
+        { target: "Zouter-SG", newName: "Zouter-SG-Chained", dialer: "RFC-HK" },
+        // { target: "美国-ATT", newName: "美国-ATT-Chained", dialer: "DMIT-LA" },
+        // 示例：如果你想加一条美国的代理链，取消下面这行的注释并修改即可
+        // { target: "US-Node", newName: "US-Node-Chained", dialer: "Japan-Relay" }
+    ];
+    
+    // 自动遍历生成所有代理链
+    chainConfigs.forEach(cfg => {
+        const originalNode = config.proxies.find(p => p.name.includes(cfg.target));
+        if (originalNode) {
+            // 通过深拷贝，克隆出一个完全独立的全新节点，不破坏原节点
+            const chainedNode = JSON.parse(JSON.stringify(originalNode));
+            chainedNode.name = cfg.newName;
+            chainedNode["dialer-proxy"] = cfg.dialer; 
+            
+            // 将新创建的代理链节点推入 proxies 列表
+            config.proxies.push(chainedNode);
+            console.log(`代理链节点 [${cfg.newName}] 创建成功并已推入列表`);
+        } else {
+            console.log(`未找到匹配 [${cfg.target}] 的原始节点，跳过创建`);
+        }
+    });
+
     // 检查配置文件中是否存在代理节点
     const proxyCount = config?.proxies?.length ?? 0;
     const proxyProviderCount =
         typeof config?.["proxy-providers"] === "object" ? Object.keys(config["proxy-providers"]).length : 0;
+    
     if (proxyCount === 0 && proxyProviderCount === 0) {
         throw new Error("配置文件中未找到任何代理或代理提供者。");
     }
 
-    // 获取所有手动添加的代理节点名称
+    // 获取所有代理节点名称 (包含了刚刚 push 进去的所有 Chained 节点)
     const allProxyNames = (config.proxies || []).map(p => p.name);
 
-    // --- 1. 设置基础配置 ---
+    // --- 2. 设置基础配置 ---
     setBaseConfig(config);
 
-    // --- 2. 创建代理组 ---
+    // --- 3. 创建代理组 ---
     config["proxy-groups"] = createProxyGroups(allProxyNames);
 
-    // --- 3. 创建规则提供者 ---
+    // --- 4. 创建规则提供者 ---
     config["rule-providers"] = createRuleProviders();
 
-    // --- 4. 创建分流规则 ---
+    // --- 5. 创建分流规则 ---
     config["rules"] = createRules();
 
     return config;
@@ -44,7 +89,6 @@ function main(config) {
 
 /**
  * 设置通用的基础配置
- * @param {object} config - Clash 配置对象
  */
 function setBaseConfig(config) {
     config['proxy-provider-compatibility'] = true;
@@ -71,8 +115,26 @@ function setBaseConfig(config) {
         "ipv6": false,
         "enhanced-mode": "fake-ip",
         "fake-ip-range": "198.18.0.1/16",
-        "fake-ip-filter": ['*', '+.lan', '+.local', '+.direct', '+.msftconnecttest.com', '+.msftncsi.com'],
-        "nameserver": ["223.5.5.5", "8.8.8.8"]
+        "fake-ip-filter": [
+            '*',
+            '+.lan',
+            '+.local',
+            '+.direct',
+            '+.msftconnecttest.com',
+            '+.msftncsi.com'
+        ],
+        "default-nameserver": [
+            "223.5.5.5",
+            "8.8.8.8"
+        ],
+        "proxy-server-nameserver": [
+            "223.5.5.5",
+            "8.8.8.8"
+        ],
+        "nameserver": [
+            "223.5.5.5",
+            "119.29.29.29"
+        ]
     };
 
     config["sniffer"] = {
@@ -84,24 +146,29 @@ function setBaseConfig(config) {
         }
     };
 
-    config["tun"] = { "enable": true, "stack": "mixed", "dns-hijack": ["any:53"] };
+    config["tun"] = {
+        "enable": true,
+        "stack": "mixed",
+        "dns-hijack": ["any:53"]
+    };
 }
 
 /**
  * 创建所有的代理组
- * @param {string[]} allProxyNames - 从配置文件中读取的所有代理节点名称
- * @returns {object[]} 代理组配置数组
  */
 function createProxyGroups(allProxyNames) {
-    const regionNodes = ['香港节点', '美国节点', '狮城节点', '日本节点'];
+    const regionNodes = ['香港节点', '美国节点', '狮城节点', '日本节点', '荷兰节点'];
 
-    // 为 “手动切换” 组定制的代理列表，不包含它自己，以避免循环引用
     const manualSelectProxies = ['DIRECT', ...regionNodes, ...allProxyNames];
-    
-    // 为其他所有策略组准备的通用代理列表，包含 “手动切换” 选项
     const commonProxies = ['DIRECT', '手动切换', ...regionNodes, ...allProxyNames];
+    const geminiProxies = [
+        '狮城节点',
+        '手动切换',
+        ...regionNodes.filter(name => name !== '狮城节点'),
+        ...allProxyNames,
+        'DIRECT'
+    ];
 
-    // 数据驱动：定义所有 select 类型的策略组
     const selectGroupsData = [
         { name: "手动切换", icon: "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/applesafari.png" },
         { name: "国外网站", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png" },
@@ -109,6 +176,7 @@ function createProxyGroups(allProxyNames) {
         { name: "微软服务", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png" },
         { name: "Apple服务", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png" },
         { name: "谷歌服务", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png" },
+        { name: "Gemini", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png" },
         { name: "电报消息", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png" },
         { name: "TikTok", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png" },
         { name: "AI", icon: "https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png" },
@@ -117,28 +185,83 @@ function createProxyGroups(allProxyNames) {
         { name: "兜底分流", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png" }
     ];
 
-    // 动态生成 select 组，并根据组名决定使用哪个代理列表
     const selectGroups = selectGroupsData.map(group => {
         const isManualSelectGroup = group.name === "手动切换";
+        const isGeminiGroup = group.name === "Gemini";
+        const proxies = isManualSelectGroup
+            ? manualSelectProxies
+            : isGeminiGroup
+                ? geminiProxies
+                : commonProxies;
         return {
+            ...selectGroupBaseOption,
             "name": group.name,
             "type": "select",
-            // 如果是 “手动切换” 组，使用不包含自身的代理列表，否则使用通用列表
-            "proxies": isManualSelectGroup ? manualSelectProxies : commonProxies,
+            "proxies": proxies,
             "icon": group.icon
         };
     });
 
-    // 数据驱动：定义所有 url-test 类型的策略组
-    const urlTestGroupsData = [
-        { name: "香港节点", filter: "^(?=.*(🇭🇰|香港|HK|Hong))(?!.*(Ali-HK|GGY-HK)).*$", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png" },
-        { name: "美国节点", filter: "^(?=.*(🇺🇸|美国|LA|SJC|ASB|SEA|US|United States))(?!.*(Alpha)).*$", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png" },
-        { name: "狮城节点", filter: "(?i)🇸🇬|新加坡|SG", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png" },
-        { name: "日本节点", filter: "(?i)🇯🇵|日本|JP", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png" },
-        { name: "欧洲节点", filter: "(?i)🇺🇸|NL|AU|FRA|NBG", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Europe_Map.png" },
+    // -------- 香港节点：改为 fallback，并允许手动指定优先顺序 --------
+    // 这里放“额外允许加入香港组”的特殊节点，例如代理链节点
+    const hkExtraNodes = [
+        // "Boil-HKT-Chained",
     ];
 
-    // 动态生成 url-test 组
+    // 香港候选节点：
+    // 1. 常规香港节点（排除 GGY-HK 和其它 Chained）
+    // 2. 额外手动加入的节点（如 Boil-HKT-Chained）
+    const hkCandidates = allProxyNames.filter(name =>
+        (
+            /(?:🇭🇰|香港|HK|Hong)/i.test(name) &&
+            !/GGY-HK/i.test(name)
+        ) ||
+        hkExtraNodes.includes(name)
+    );
+
+    // 这里的顺序，就是 fallback 的优先顺序
+    // 写在前面的优先使用，没写的节点自动排在后面
+    const hkPriorityKeywords = [
+        "LALA-Boil-HKT",
+        "RFC-Boil-HKT",
+        "RFC-HK",
+    ];
+
+    const hkPreferred = hkPriorityKeywords.flatMap(keyword =>
+        hkCandidates.filter(name => name.includes(keyword))
+    );
+
+    const hkOthers = hkCandidates.filter(name =>
+        !hkPriorityKeywords.some(keyword => name.includes(keyword))
+    );
+
+    const hkFallbackProxies = [...new Set([
+        ...hkPreferred,
+        ...hkOthers
+    ])];
+
+    const hkFallbackGroup = {
+        "name": "香港节点",
+        "type": "fallback",
+        "proxies": hkFallbackProxies.length ? hkFallbackProxies : ["DIRECT"],
+        "url": "https://cp.cloudflare.com",
+        "interval": 180,
+        "lazy": true,
+        "timeout": 10000,
+        "max-failed-times": 3,
+        // "expected-status": 204,
+        "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
+    };
+
+    // -------- 其它地区仍保持 url-test --------
+    const urlTestGroupsData = [
+        { name: "美国节点", filter: "^(?=.*(🇺🇸|美国|LA|SJC|ASB|SEA|US|United States))(?!.*(Alpha|HKT|Chained)).*$", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png" },
+        { name: "狮城节点", filter: "(?i)(🇸🇬|新加坡|SG).*Chained", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png" },
+        { name: "日本节点", filter: "(?i)(🇯🇵|日本|JP)(?!.*Chained)", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png" },
+        { name: "荷兰节点", filter: "(?i)(🇳🇱|荷兰|NL|Netherlands)(?!.*Chained)", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Europe_Map.png" },
+        { name: "欧洲节点", filter: "(?i)(FRA|NBG)(?!.*Chained)", icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Europe_Map.png" },
+    ];
+
     const urlTestGroups = urlTestGroupsData.map(group => ({
         ...groupBaseOption,
         "name": group.name,
@@ -148,13 +271,12 @@ function createProxyGroups(allProxyNames) {
         "icon": group.icon
     }));
 
-    // 将所有代理组按正确顺序组合
-    // 找到 "PayPal" 组的位置，在其后插入测速组
     const payPalIndex = selectGroups.findIndex(group => group.name === "PayPal");
     const finalGroups = [
-        ...selectGroups.slice(0, payPalIndex + 1), // "手动切换" 到 "PayPal"
-        ...urlTestGroups,                          // "香港节点", "美国节点" 等
-        ...selectGroups.slice(payPalIndex + 1)     // 剩余的组，即 "兜底分流"
+        ...selectGroups.slice(0, payPalIndex + 1),
+        hkFallbackGroup,
+        ...urlTestGroups,
+        ...selectGroups.slice(payPalIndex + 1)
     ];
 
     return finalGroups;
@@ -162,16 +284,17 @@ function createProxyGroups(allProxyNames) {
 
 /**
  * 创建所有的规则提供者
- * @returns {object} 规则提供者配置对象
  */
 function createRuleProviders() {
     const rulesBaseUrl = "https://raw.githubusercontent.com/Acacia415/Tool/X/mihomo/Rules/";
+    const customAiRulesBaseUrl = "https://raw.githubusercontent.com/Acacia415/surge/main/";
     const providerData = {
         "AD": `${rulesBaseUrl}Reject.list`,
         "YouTube": `${rulesBaseUrl}YouTube.list`,
-        "Google": `${rulesBaseUrl}Google.list`,
+        "Google": `${customAiRulesBaseUrl}Google.list`,
+        "Gemini": `${customAiRulesBaseUrl}Gemini.list`,
         "Telegram": `${rulesBaseUrl}Telegram.list`,
-        "AI": `${rulesBaseUrl}AI.list`,
+        "AI": `${customAiRulesBaseUrl}AI.list`,
         "TikTok": `${rulesBaseUrl}TikTok.list`,
         "PayPal": `${rulesBaseUrl}PayPal.list`,
         "Steam": `${rulesBaseUrl}Steam.list`,
@@ -191,11 +314,20 @@ function createRuleProviders() {
 
 /**
  * 创建所有的分流规则
- * @returns {string[]} 规则数组
  */
 function createRules() {
-    return [
-        // --- 自定义规则 ---
+    return [  
+        "DOMAIN-SUFFIX,okex.com,狮城节点",
+        "DOMAIN-SUFFIX,oklink.com,狮城节点",
+        "DOMAIN-SUFFIX,okx.com,狮城节点",
+        
+        "DOMAIN-SUFFIX,tech26.de,欧洲节点",
+        "DOMAIN-SUFFIX,n26.com,欧洲节点",
+        "DOMAIN-SUFFIX,number26.de,欧洲节点",
+        "DOMAIN-KEYWORD,n26,欧洲节点",
+        "DOMAIN-KEYWORD,number26,欧洲节点",
+        "DOMAIN-KEYWORD,tech26,欧洲节点",
+        
         "DOMAIN-SUFFIX,copilot.microsoft.com,微软服务",
         "DOMAIN-SUFFIX,copilot.github.com,微软服务",
         "DOMAIN-SUFFIX,bing.com,DIRECT",
@@ -203,33 +335,31 @@ function createRules() {
         "DOMAIN-SUFFIX,vps.hosting,DIRECT",
         "DOMAIN-SUFFIX,18comic.vip,香港节点",
         "DOMAIN-SUFFIX,hanime1.me,香港节点",
-        "DOMAIN-SUFFIX,nodeseek.com,美国节点",
+        "DOMAIN-SUFFIX,nodeseek.com,香港节点",
 
         // --- 规则集 ---
         "RULE-SET,AD,REJECT",
         "RULE-SET,Apple服务,Apple服务",
         "RULE-SET,TikTok,国际媒体",
         "RULE-SET,YouTube,国际媒体",
+        "RULE-SET,Gemini,Gemini",
         "RULE-SET,AI,AI",
         "RULE-SET,Google,谷歌服务",
         "RULE-SET,Telegram,电报消息",
         "RULE-SET,Steam,Steam",
         "RULE-SET,PayPal,PayPal",
 
-        // --- GEO 规则 ---
-        "GEOIP,private,DIRECT", // 私有地址直连
-        "GEOIP,cn,DIRECT",      // 国内 IP 直连
+        "GEOIP,private,DIRECT",
+        "GEOIP,cn,DIRECT",
 
-        // 需要走代理的微软服务
         "GEOSITE,github,微软服务",
         "GEOSITE,onedrive,微软服务",
         "GEOSITE,azure,微软服务", 
-        // 剩余的其他微软服务直连
         "GEOSITE,microsoft,DIRECT", 
 
-        "GEOSITE,gfw,国外网站", // 被墙的网站走代理
+        "GEOSITE,gfw,国外网站",
 
-        // --- 兜底规则 ---
         "MATCH,兜底分流"
     ];
 }
+
