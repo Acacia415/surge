@@ -1,0 +1,11 @@
+# NAME: Muse
+# TYPE: Surge / Mihomo rule-set
+# BEHAVIOR: classical
+# FORMAT: text
+# UPDATED: 2026-10-04
+# RULES: 4
+
+DOMAIN-SUFFIX,muse.ai
+DOMAIN-SUFFIX,meta.ai
+DOMAIN-SUFFIX,meta.com
+DOMAIN-SUFFIX,metaaivm.com
