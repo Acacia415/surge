@@ -1,0 +1,4 @@
+# Mihomo rule-provider: behavior=domain, format=text
+# Domain matching only. The consuming config limits mail ports and, on Windows, the process.
+imap.gmail.com
+smtp.gmail.com
